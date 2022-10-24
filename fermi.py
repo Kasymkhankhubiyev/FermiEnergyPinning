@@ -1,5 +1,8 @@
 import numpy as np
 
+# Решение какой-то задачи связанной с уровнями Ферми
+# Предлагаю обернуть в notebook и отправить в отдельную папку, чтобы можно было на семинарах быстро пользоваться
+
 # Variable declaration
 k = 1.38e-023  # Boltzmann constant, J/K
 h = 6.626e-034  # Planck's constant, Js
