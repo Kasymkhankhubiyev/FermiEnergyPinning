@@ -1,5 +1,9 @@
 import numpy as np
 
+# Решение какой-то задачи связанной с током, теория - в начале лекции 8
+# Предлагаю обернуть в notebook и отправить в отдельную папку, чтобы можно было на семинарах быстро пользоваться
+
+
 # h = 4.135e-15  # Planck's constant, Ev * c
 # e = 4.803e-10
 # m_0 = 9.1e-28  # Rest mass of an electron, g
@@ -22,10 +26,10 @@ mu_p = 450
 m_n = 0.36*m_0
 m_p = 0.81*m_0
 
-def D(mu):
+def D(mu):  # diffusion coefficient
     return mu*k*T/e
 
-def tau(m, mu):
+def tau(m, mu): # get relaxation time
     return m*mu/e
 
 def L(D, tau):
