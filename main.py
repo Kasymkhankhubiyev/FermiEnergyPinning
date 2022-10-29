@@ -30,8 +30,8 @@ def create_window():
     w = window.winfo_screenwidth()
     h = window.winfo_screenheight()
     window.geometry("{}x{}".format(w-10, h-1))
-    icon = tk.PhotoImage(file='logo.png')
-    window.iconphoto(False, icon)
+    # icon = tk.PhotoImage(file='logo.png')
+    # window.iconphoto(False, icon)
     return window
 
 if __name__ == '__main__':
