@@ -46,8 +46,10 @@ class MainWindow:
         tk.Label(self.window, text='T', font=('Arial', 18)).place(x=870, y=442)
         tk.Entry(self.window, font=font, width=5).place(x=900, y=440)
 
-        tk.Label(self.window, text='Внешнее поле Eout [В/м]', font=('Arial', 18)).place(x=705, y=500)
-        tk.Entry(self.window, font=font, width=20).place(x=700, y=540)
+        tk.Label(self.window, text='Внешнее поле Eout [В/м]', font=('Arial', 18)).place(x=705, y=487)
+        tk.Entry(self.window, font=font, width=20).place(x=700, y=525)
+
+        tk.Button(self.window, text='Найти уровень Ферми', font=font, bg='SteelBlue1').place(x=700, y=565)
 
 
 
