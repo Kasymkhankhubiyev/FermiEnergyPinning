@@ -25,6 +25,8 @@ def draw_figure(ax, canvas, results):
         ax.legend(fontsize=10, loc='right')
     output_info(results)
     canvas.draw()
+
+
 def get_calculated_values():
     args = {
         "E_gap": float(E_g.get()),  # Band gap [eV]
@@ -39,6 +41,8 @@ def get_calculated_values():
         "E_out": float(E_out.get()) * coef_phys_parameters['E_out'],  # External electric field
     }
     return calculations.calculate(args)
+
+
 def GaAs_calculated():
     clear()
     E_g.insert(0, "1.423")

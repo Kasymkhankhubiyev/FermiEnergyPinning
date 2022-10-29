@@ -8,5 +8,5 @@ class MainWindow:
         self.canvas = None
 
     def draw_window(self) -> None:
-        self.canvas = tk.Canvas(self.window, background='white', width=400, height=350)
+        self.canvas = tk.Canvas(self.window, background='white', width=800, height=750)
         self.canvas.place(x=10, y=10)
