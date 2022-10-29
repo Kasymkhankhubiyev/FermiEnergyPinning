@@ -3,5 +3,10 @@ from tkinter import ttk
 
 class MainWindow:
 
-    def __init__(self) -> None:
-        pass
+    def __init__(self, window: tk.Tk) -> None:
+        self.window = window
+        self.canvas = None
+
+    def draw_window(self) -> None:
+        self.canvas = tk.Canvas(self.window, background='white', width=400, height=350)
+        self.canvas.place(x=10, y=10)

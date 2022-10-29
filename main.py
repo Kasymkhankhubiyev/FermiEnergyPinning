@@ -1,4 +1,5 @@
 import tkinter as tk
+from MainWindow import MainWindow
 
 def clear_window(window: tk.Tk):
     """
@@ -17,7 +18,6 @@ def on_closing():
     if messagebox.askokcancel('Выход из приложения', 'Хотите выйти?'):
         win.destroy()
         #adm.send_ReportForOneday(dbase=dbase)
-        dbase.close()
 
 def create_window():
     """
@@ -35,4 +35,15 @@ def create_window():
     return window
 
 if __name__ == '__main__':
-    pass
+
+    win = create_window()
+
+    """
+    При закрытии всплывает окно, уточняющее намерение пользователя
+    """
+    win.protocol('WM_DELETE_WINDOW', on_closing)
+
+    main_window = MainWindow()
+    main_window.draw_window()
+
+    win.mainloop()
