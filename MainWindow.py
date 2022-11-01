@@ -7,6 +7,9 @@ class MainWindow:
     def __init__(self, window: tk.Tk) -> None:
         self.window = window
         self.canvas, self.combobox = None, None
+        self.mc_entry, self.mv_entry, self.nd_entry = None, None, None
+        self.nas_entry, self.eg_entry, self.epsilon_entry = None, None, None
+        self.ed_entry, self.eout_entry, self.temp_entry = None, None, None
 
     def _set_template_attributes(self, template):
         pass
@@ -43,31 +46,42 @@ class MainWindow:
         self.combobox.bind("<<ComboboxSelected>>", self._select_template)
 
         tk.Label(self.window, text='Mc/m0', font=('Arial', 18)).place(x=700, y=122)
-        tk.Entry(self.window, font=font, width=5).place(x=780, y=120)
+        self.mc_entry = tk.Entry(self.window, font=font, width=5)
+        self.mc_entry.place(x=780, y=120)
 
         tk.Label(self.window, text='Mv/m0', font=('Arial', 18)).place(x=870, y=122)
-        tk.Entry(self.window, font=font, width=5).place(x=950, y=120)
+        self.mv_entry = tk.Entry(self.window, font=font, width=5)
+        self.mv_entry.place(x=950, y=120)
 
         tk.Label(self.window, text='концентрация доноров Nd', font=font).place(x=700, y=180)
-        tk.Spinbox(self.window, font=font).place(x=700, y=220)
+        self.nd_entry = tk.Entry(self.window, font=font)
+        self.nd_entry.place(x=700, y=220)
+        # tk.Spinbox(self.window, font=font).place(x=700, y=220)
 
         tk.Label(self.window, text='концентрация доноров Nas', font=font).place(x=700, y=280)
-        tk.Spinbox(self.window, font=font).place(x=700, y=320)
+        self.nas_entry = tk.Entry(self.window, font=font)
+        self.nas_entry.place(x=700, y=320)
+        # tk.Spinbox(self.window, font=font).place(x=700, y=320)
 
         tk.Label(self.window, text='Eg', font=('Arial', 18)).place(x=700, y=382)  #+380
-        tk.Entry(self.window, font=font, width=5).place(x=750, y=380)
+        self.eg_entry = tk.Entry(self.window, font=font, width=5)
+        self.eg_entry.place(x=750, y=380)
 
         tk.Label(self.window, text='ε', font=('Arial', 20)).place(x=870, y=378)
-        tk.Entry(self.window, font=font, width=5).place(x=900, y=380)
+        self.epsilon_entry = tk.Entry(self.window, font=font, width=5)
+        self.epsilon_entry.place(x=900, y=380)
 
         tk.Label(self.window, text='Ed', font=('Arial', 18)).place(x=700, y=442)  # +380
-        tk.Entry(self.window, font=font, width=5).place(x=750, y=440)
+        self.ed_entry = tk.Entry(self.window, font=font, width=5)
+        self.ed_entry.place(x=750, y=440)
 
         tk.Label(self.window, text='T', font=('Arial', 18)).place(x=870, y=442)
-        tk.Entry(self.window, font=font, width=5).place(x=900, y=440)
+        self.temp_entry = tk.Entry(self.window, font=font, width=5)
+        self.temp_entry.place(x=900, y=440)
 
         tk.Label(self.window, text='Внешнее поле Eout [В/м]', font=('Arial', 18)).place(x=705, y=487)
-        tk.Entry(self.window, font=font, width=20).place(x=700, y=525)
+        self.eout_entry = tk.Entry(self.window, font=font, width=20)
+        self.eout_entry.place(x=700, y=525)
 
         tk.Button(self.window, text='Найти уровень Ферми', font=font, bg='SteelBlue1').place(x=700, y=565)
 
