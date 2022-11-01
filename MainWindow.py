@@ -1,14 +1,34 @@
 import tkinter as tk
 from tkinter import ttk
+import SemoconductorsTemplates as st
 
 class MainWindow:
 
     def __init__(self, window: tk.Tk) -> None:
         self.window = window
-        self.canvas = None
+        self.canvas, self.combobox = None, None
 
-    def _select_template(self) -> None:
+    def _set_template_attributes(self, template):
         pass
+
+    def _select_template(self, event) -> None:
+        selected = self.combobox.get()
+        if selected == 'Si':
+            self._set_template_attributes(template=st.Si())
+        elif selected == 'Ge':
+            self._set_template_attributes(template=st.Ge())
+        elif selected == 'GaAs':
+            self._set_template_attributes(template=st.GaAs())
+        elif selected == 'AlAs':
+            self._set_template_attributes(template=st.AlAs())
+        elif selected == 'GaP':
+            self._set_template_attributes(template=st.GaP())
+        elif selected == 'InP':
+            self._set_template_attributes(template=st.InP())
+        elif selected == 'GaSb':
+            self._set_template_attributes(template=st.GaSb())
+        elif selected == 'InSb':
+            self._set_template_attributes(template=st.InSb())
 
     def draw_window(self) -> None:
         self.canvas = tk.Canvas(self.window, background='white', width=650, height=600)
@@ -17,10 +37,10 @@ class MainWindow:
         font = ('Arial', 20)
 
         tk.Label(self.window, text='Шаблон полупроводника:', font=font).place(x=700, y=30)
-        combobox = ttk.Combobox(self.window, values=['Кремний'], font=font)
-        combobox.place(x=700, y=70)
+        self.combobox = ttk.Combobox(self.window, values=['Si', 'Ge', 'GaAs', 'AlAs', 'GaP', 'InP', 'GaSb', 'InSb'], font=font)
+        self.combobox.place(x=700, y=70)
 
-        combobox.bind("<<ComboboxSelected>>", self._select_template)
+        self.combobox.bind("<<ComboboxSelected>>", self._select_template)
 
         tk.Label(self.window, text='Mc/m0', font=('Arial', 18)).place(x=700, y=122)
         tk.Entry(self.window, font=font, width=5).place(x=780, y=120)
