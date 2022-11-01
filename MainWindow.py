@@ -11,8 +11,21 @@ class MainWindow:
         self.nas_entry, self.eg_entry, self.epsilon_entry = None, None, None
         self.ed_entry, self.eout_entry, self.temp_entry = None, None, None
 
-    def _set_template_attributes(self, template):
-        pass
+    def _clear_entry(self, entry: tk.Entry) -> None:
+        entry.delete(0, tk.END)
+
+    def _set_template_attributes(self, template) -> None:
+        self._clear_entry(entry=self.mc_entry)
+        self.mc_entry.insert(0, template.mc)
+
+        self._clear_entry(entry=self.mv_entry)
+        self.mv_entry.insert(0, template.mv)
+
+        self._clear_entry(entry=self.eg_entry)
+        self.eg_entry.insert(0, template.Eg)
+
+        self._clear_entry(entry=self.epsilon_entry)
+        self.epsilon_entry.insert(0, template.epsilon)
 
     def _select_template(self, event) -> None:
         selected = self.combobox.get()

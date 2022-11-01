@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 from MainWindow import MainWindow
 
+
 def clear_window(window: tk.Tk):
     """
     Очищаем все виджеты установленные при помощи 'place'
@@ -9,6 +10,7 @@ def clear_window(window: tk.Tk):
     array = window.place_slaves()
     for index in array:
         index.destroy()
+
 
 def on_closing():
     """
@@ -19,6 +21,7 @@ def on_closing():
     if messagebox.askokcancel('Выход из приложения', 'Хотите выйти?'):
         win.destroy()
         #adm.send_ReportForOneday(dbase=dbase)
+
 
 def create_window():
     """
@@ -34,6 +37,7 @@ def create_window():
     # icon = tk.PhotoImage(file='icon.png')
     # window.iconphoto(False, icon)
     return window
+
 
 if __name__ == '__main__':
 
