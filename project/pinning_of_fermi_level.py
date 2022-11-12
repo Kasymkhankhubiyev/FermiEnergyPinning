@@ -8,7 +8,6 @@ matplotlib.use("TkAgg")
 
 coef_phys_parameters = {'N_d0': 1e16, 'N_as': 1e17, 'E_out': 1e4}
 
-
 def draw_figure(ax, canvas, results):
     ax.cla()
     ax.set_xlabel("x [cm]")
