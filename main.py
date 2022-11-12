@@ -16,11 +16,9 @@ def on_closing():
     """
     обрабатываем закрытие программы
     запрашиваем подтверждение о закрытии
-    и высылаем отчет.
     """
     if messagebox.askokcancel('Выход из приложения', 'Хотите выйти?'):
         win.destroy()
-        #adm.send_ReportForOneday(dbase=dbase)
 
 
 def create_window():

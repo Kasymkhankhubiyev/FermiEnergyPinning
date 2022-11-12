@@ -1,12 +1,16 @@
 import tkinter as tk
 from tkinter import ttk
 import SemoconductorsTemplates as st
+import DrawGraphs as dg
+
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import matplotlib.pyplot as plt
 
 class MainWindow:
 
     def __init__(self, window: tk.Tk) -> None:
         self.window = window
-        self.canvas, self.combobox = None, None
+        self.canvas, self.fermi_canvas, self.combobox = None, None, None
         self.mc_entry, self.mv_entry, self.nd_entry = None, None, None
         self.nas_entry, self.eg_entry, self.epsilon_entry = None, None, None
         self.ed_entry, self.eout_entry, self.temp_entry = None, None, None
@@ -49,6 +53,7 @@ class MainWindow:
     def draw_window(self) -> None:
         self.canvas = tk.Canvas(self.window, background='white', width=650, height=600)
         self.canvas.place(x=10, y=10)
+        self.fermi_canvas = dg.FermiCanvas(canvas=self.canvas)
 
         font = ('Arial', 20)
 
