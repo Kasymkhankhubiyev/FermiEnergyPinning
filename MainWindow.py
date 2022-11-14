@@ -6,6 +6,8 @@ import DrawGraphs as dg
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
 
+import numpy as np
+
 class MainWindow:
 
     def __init__(self, window: tk.Tk) -> None:
@@ -14,6 +16,7 @@ class MainWindow:
         self.mc_entry, self.mv_entry, self.nd_entry = None, None, None
         self.nas_entry, self.eg_entry, self.epsilon_entry = None, None, None
         self.ed_entry, self.eout_entry, self.temp_entry = None, None, None
+        self.find_button = None
 
     def _clear_entry(self, entry: tk.Entry) -> None:
         entry.delete(0, tk.END)
@@ -79,7 +82,7 @@ class MainWindow:
         tk.Label(self.window, text='концентрация доноров Nas', font=font).place(x=700, y=280)
         self.nas_entry = tk.Entry(self.window, font=font)
         self.nas_entry.place(x=700, y=320)
-        # tk.Spinbox(self.window, font=font).place(x=700, y=320)
+        # tk.Spinbox(self.window, font=font).place(x=700, y=220)
 
         tk.Label(self.window, text='Eg', font=('Arial', 18)).place(x=700, y=382)  #+380
         self.eg_entry = tk.Entry(self.window, font=font, width=5)
@@ -101,8 +104,28 @@ class MainWindow:
         self.eout_entry = tk.Entry(self.window, font=font, width=20)
         self.eout_entry.place(x=700, y=525)
 
-        tk.Button(self.window, text='Найти уровень Ферми', font=font, bg='SteelBlue1').place(x=700, y=565)
+        self.find_button = tk.Button(self.window, text='Найти уровень Ферми', font=font, bg='SteelBlue1')
+        self.find_button.place(x=700, y=565)
+        self.find_button.config(command=self.handle_button)
 
 
+    def handle_button(self) -> None:
+        self.fermi_canvas.draw(self.calculate())
+
+
+    def calculate(self) -> dict:
+        print("clc")
+        x = np.arange(0, 5, step=0.1)   # Just for test
+        exps = np.exp(x)
+
+        data = {'x': x,
+                'Ec': exps,
+                'Ef': (exps+1.0),
+                'Ea': (exps+5.0),
+                'Ed': (exps+10.0),
+                'Ev': x,
+                'W': 1,
+                'phi': 0}
+        return data
 
 
