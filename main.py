@@ -31,9 +31,12 @@ def create_window():
     window.title("Science Software")
     w = window.winfo_screenwidth()
     h = window.winfo_screenheight()
-    window.geometry("{}x{}".format(w-10, h-1))
-    # icon = tk.PhotoImage(file='icon.png')
-    # window.iconphoto(False, icon)
+    # window.geometry("{}x{}".format(w-10, h-1))
+    # window.geometry("{}x{}".format(1366, 768))
+    window.geometry("{}x{}".format(1920, 1080))
+
+    icon = tk.PhotoImage(file='icon.png')
+    window.iconphoto(False, icon)
     return window
 
 
