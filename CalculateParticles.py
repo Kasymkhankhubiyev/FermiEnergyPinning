@@ -7,10 +7,6 @@ Kelvin = float
 eV = float
 
 
-def _calcNc() -> float:
-    pass
-
-
 def _calc_Nc(me: me_effective, t: Kelvin) -> float:  # Nparticle:
     k = 1.38 * 10**-23  # J/K
     h = 1.054 * 10**-34  # kg * m /sec^2
