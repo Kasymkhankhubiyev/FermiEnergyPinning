@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
 from MainWindow import MainWindow
+from project import pinning_of_fermi_level as fp
 
 
 def clear_window(window: tk.Tk):
@@ -33,10 +34,11 @@ def create_window():
     h = window.winfo_screenheight()
     # window.geometry("{}x{}".format(w-10, h-1))
     # window.geometry("{}x{}".format(1366, 768))
-    window.geometry("{}x{}".format(1920, 1080))
+    # window.geometry("{}x{}".format(1920, 1080))
+    window.geometry("{}x{}".format(w - 10, h - 1))
 
-    icon = tk.PhotoImage(file='icon.png')
-    window.iconphoto(False, icon)
+    # icon = tk.PhotoImage(file='icon.png')
+    # window.iconphoto(False, icon)
     return window
 
 
@@ -53,3 +55,5 @@ if __name__ == '__main__':
     main_window.draw_window()
 
     win.mainloop()
+
+    # fp.run()

@@ -19,7 +19,7 @@ class MainWindow:
         self.mc_sbox, self.mv_sbox = None, None
         self.nd_sbox, self.nd_pwr_sbox = None, None
         self.nas_sbox, self.nas_pwr_sbox = None, None
-        self.eg_sbox, self.epsilon_sbox = None, None
+        self.eg_sbox, self.epsilon_sbox , self.eas_sbox = None, None, None
         self.ed_sbox, self.eout_sbox, self.temp_sbox = None, None, None
 
         self.calc_button = None
@@ -86,6 +86,112 @@ class MainWindow:
 
         self.fermi_canvas.draw(self.calculate())
 
+    def _set_templetes_combobox_block(self, font_label, font_sbox) -> None:
+        tk.Label(self.window, text='Полупроводник: ', font=font_sbox).grid(row=1, column=1, columnspan=3, sticky=tk.W)
+        self.combobox = ttk.Combobox(self.window, values=['Si', 'Ge', 'GaAs', 'AlAs', 'GaP', 'InP', 'GaSb', 'InSb'],
+                                     font=font_sbox, width=5)
+        self.combobox.grid(row=1, column=4, sticky=tk.W + tk.E)
+        self.combobox.bind("<<ComboboxSelected>>", self._select_template)
+
+    def _set_effective_electron_mass_sbox(self, font_label, font_sbox) -> None:
+        # эффективная масса плотности состояний электронов
+        tk.Label(self.window, text='Mc = ', font=font_label, width=5).grid(row=2, column=1, sticky=tk.E)
+        self.mc_sbox = tk.Spinbox(self.window, font=font_sbox, width=5, from_=0, to=1000, increment=0.01,
+                                  command=self._sbox_handler)
+        self.mc_sbox.bind("<KeyRelease>", self._sbox_handler)
+        self.mc_sbox.grid(row=2, column=2, sticky=tk.W + tk.E)
+
+    def _set_effective_hole_mass_sbox(self, font_label, font_sbox) -> None:
+        # эффективная масса плотности состояний дырок
+        tk.Label(self.window, text='Mv = ', font=font_label, width=5).grid(row=2, column=3, sticky=tk.E)
+        self.mv_sbox = tk.Spinbox(self.window, font=font_sbox, width=5, from_=0, to=1000, increment=0.01,
+                                  command=self._sbox_handler)
+        self.mv_sbox.bind("<KeyRelease>", self._sbox_handler)
+        self.mv_sbox.grid(row=2, column=4, sticky=tk.W + tk.E)
+
+    def _set_donors_concentration_sbox(self, font_label, font_sbox) -> None:
+        # концентрация доноров, то же самое что и N_{d0}
+        tk.Label(self.window, text='Концентрация доноров Nd', font=font_sbox).grid(row=3, column=1, columnspan=4,
+                                                                                   sticky=tk.W)
+        self.nd_sbox = tk.Spinbox(self.window, font=font_sbox, width=5, from_=0, to=100, increment=0.1,
+                                  command=self._sbox_handler)
+        self.nd_sbox.grid(row=4, column=2, sticky=tk.W + tk.E)
+        self.nd_sbox.bind("<KeyRelease>", self._sbox_handler)
+
+        # порядок концентрации доноров
+        tk.Label(self.window, text=' * 10 ^', font=font_sbox).grid(row=4, column=3, sticky=tk.W + tk.E)
+        self.nd_pwr_sbox = tk.Spinbox(self.window, font=font_sbox, width=5, from_=0, to=100,
+                                      command=self._sbox_handler)
+        self.nd_pwr_sbox.grid(row=4, column=4, sticky=tk.W + tk.E)
+        self.nd_pwr_sbox.bind("<KeyRelease>", self._sbox_handler)
+
+    def _set_acceptors_concentration_sbox(self, font_label, font_sbox) -> None:
+        # концентрация акцепторов N_{a}
+        tk.Label(self.window, text='Концентрация акцепторов Nas', font=font_sbox).grid(row=5, column=1, columnspan=4,
+                                                                                       sticky=tk.W)
+        self.nas_sbox = tk.Spinbox(self.window, font=font_sbox, width=5, from_=0, to=100, increment=0.1,
+                                   command=self._sbox_handler)
+        self.nas_sbox.grid(row=6, column=2, sticky=tk.W + tk.E)
+        self.nas_sbox.bind("<KeyRelease>", self._sbox_handler)
+
+        # порядок концентрации акцепторов
+        tk.Label(self.window, text=' * 10 ^', font=font_sbox).grid(row=6, column=3, sticky=tk.W + tk.E)
+        self.nas_pwr_sbox = tk.Spinbox(self.window, font=font_sbox, width=5, from_=0, to=100,
+                                       command=self._sbox_handler)
+        self.nas_pwr_sbox.grid(row=6, column=4, sticky=tk.W + tk.E)
+        self.nas_pwr_sbox.bind("<KeyRelease>", self._sbox_handler)
+
+    def _set_energy_gap_sbox(self, font_label, font_sbox) -> None:
+        # ширина запрещенной зоны E_{g} отсчитывается от потолка валентной зоны,
+        # измеряется в эВ
+        tk.Label(self.window, text='Eg = ', font=font_label).grid(row=7, column=1, sticky=tk.E)
+        self.eg_sbox = tk.Spinbox(self.window, font=font_sbox, width=5, from_=0, to=100, increment=0.01,
+                                  command=self._sbox_handler)
+        self.eg_sbox.grid(row=7, column=2, sticky=tk.W + tk.E)
+        self.eg_sbox.bind("<KeyRelease>", self._sbox_handler)
+
+    def _set_epsilon_sbox(self, font_label, font_sbox) -> None:
+        # диэлектрическая проницаемость полупроводника
+        tk.Label(self.window, text='ε = ', font=font_sbox).grid(row=7, column=3, sticky=tk.E)
+        self.epsilon_sbox = tk.Spinbox(self.window, font=font_sbox, width=5, from_=0, to=100, increment=0.1,
+                                       command=self._sbox_handler)
+        self.epsilon_sbox.grid(row=7, column=4, sticky=tk.E + tk.W)
+        self.epsilon_sbox.bind("<KeyRelease>", self._sbox_handler)
+
+    def _set_donors_energy_level_sbox(self, font_label, font_sbox) -> None:
+        # уровень энергии доноров, отсчитывается от дна зоны проводимости, измеряется в эВ
+        tk.Label(self.window, text='Ed = ', font=font_label).grid(row=8, column=1, sticky=tk.E)
+        self.ed_sbox = tk.Spinbox(self.window, font=font_sbox, width=5, from_=0, to=100, increment=0.01,
+                                  command=self._sbox_handler)
+        self.ed_sbox.grid(row=8, column=2, sticky=tk.W + tk.E)
+        self.ed_sbox.bind("<KeyRelease>", self._sbox_handler)
+
+    def _set_surface_acceptors_energy_level_sbox(self, font_label, font_sbox) -> None:
+        # уровень энергии доноров, отсчитывается от дна зоны проводимости, измеряется в эВ
+        tk.Label(self.window, text='Eas = ', font=font_label).grid(row=9, column=1, sticky=tk.E)
+        self.ed_sbox = tk.Spinbox(self.window, font=font_sbox, width=5, from_=0, to=100, increment=0.01,
+                                  command=self._sbox_handler)
+        self.ed_sbox.grid(row=9, column=2, sticky=tk.W + tk.E)
+        self.ed_sbox.bind("<KeyRelease>", self._sbox_handler)
+
+    def _set_temperature_sbox(self, font_label, font_sbox) -> None:
+        # Температура в Кельвинах
+        tk.Label(self.window, text='T = ', font=font_label).grid(row=8, column=3, sticky=tk.E)
+        self.temp_sbox = tk.Spinbox(self.window, font=font_sbox, width=5, from_=0, to=math.inf,
+                                    command=self._sbox_handler)
+        self.temp_sbox.grid(row=8, column=4, sticky=tk.W + tk.E)
+        self.temp_sbox.bind("<KeyRelease>", self._sbox_handler)
+
+    def _set_external_field_value_sbox(self, font_label, font_sbox) -> None:
+        # Величина внешнего поля
+        tk.Label(self.window, text='Внешнее поле', font=font_sbox).grid(row=10, column=1, columnspan=4, sticky=tk.W)
+        tk.Label(self.window, text='Eout = ', font=font_label).grid(row=10, column=3, sticky=tk.E)
+        self.eout_sbox = tk.Spinbox(self.window, font=font_sbox, width=5, from_=0, to=float(math.inf),
+                                    command=self._sbox_handler)
+        self.eout_sbox.grid(row=10, column=4, sticky=tk.W + tk.E)
+        self.eout_sbox.bind("<KeyRelease>", self._sbox_handler)
+
+
     def draw_window(self) -> None:
         # Надо будет поставить более-менее адекватные пределы и размеры шага
 
@@ -93,101 +199,54 @@ class MainWindow:
         self.canvas.grid(row=0, column=0, rowspan=12, padx=10, pady=10)
         self.fermi_canvas = dg.FermiCanvas(canvas=self.canvas)
 
-        font = ('Arial', 20)
+        font_label = ('Arial', 18)
+        font_sbox = ('Arial', 20)
 
-        tk.Label(self.window, text='Полупроводник: ', font=font).grid(row=1, column=1, columnspan=3, sticky=tk.W)
-        self.combobox = ttk.Combobox(self.window, values=['Si', 'Ge', 'GaAs', 'AlAs', 'GaP', 'InP', 'GaSb', 'InSb'],
-                                     font=font, width=5)
-        self.combobox.grid(row=1, column=4, sticky=tk.W + tk.E)
-        self.combobox.bind("<<ComboboxSelected>>", self._select_template)
+        self._set_templetes_combobox_block(font_sbox=font_sbox, font_label=font_label)
+        self._set_effective_electron_mass_sbox(font_sbox=font_sbox, font_label=font_label)
+        self._set_effective_hole_mass_sbox(font_sbox=font_sbox, font_label=font_label)
+        self._set_donors_concentration_sbox(font_sbox=font_sbox, font_label=font_label)
+        self._set_acceptors_concentration_sbox(font_sbox=font_sbox, font_label=font_label)
+        self._set_energy_gap_sbox(font_sbox=font_sbox, font_label=font_label)
+        self._set_epsilon_sbox(font_sbox=font_sbox, font_label=font_label)
+        self._set_donors_energy_level_sbox(font_sbox=font_sbox, font_label=font_label)
+        self._set_temperature_sbox(font_sbox=font_sbox, font_label=font_label)
+        self._set_surface_acceptors_energy_level_sbox(font_label=font_label, font_sbox=font_sbox)
+        self._set_external_field_value_sbox(font_sbox=font_sbox, font_label=font_label)
 
-        tk.Label(self.window, text='Mc = ', font=('Arial', 18), width=5).grid(row=2, column=1, sticky=tk.E)
-        self.mc_sbox = tk.Spinbox(self.window, font=font, width=5, from_=0, to=1000, increment=0.01,
-                                  command=self.sbox_handler)
-        self.mc_sbox.bind("<KeyRelease>", self.sbox_handler)
-        self.mc_sbox.grid(row=2, column=2, sticky=tk.W + tk.E)
-
-        tk.Label(self.window, text='Mv = ', font=('Arial', 18), width=5).grid(row=2, column=3, sticky=tk.E)
-        self.mv_sbox = tk.Spinbox(self.window, font=font, width=5, from_=0, to=1000, increment=0.01,
-                                  command=self.sbox_handler)
-        self.mv_sbox.bind("<KeyRelease>", self.sbox_handler)
-        self.mv_sbox.grid(row=2, column=4, sticky=tk.W + tk.E)
-
-        tk.Label(self.window, text='Концентрация доноров Nd', font=font).grid(row=3, column=1, columnspan=4,
-                                                                              sticky=tk.W)
-        self.nd_sbox = tk.Spinbox(self.window, font=font, width=5, from_=0, to=100, increment=0.1,
-                                  command=self.sbox_handler)
-        self.nd_sbox.grid(row=4, column=2, sticky=tk.W + tk.E)
-        self.nd_sbox.bind("<KeyRelease>", self.sbox_handler)
-
-        tk.Label(self.window, text=' * 10 ^', font=font).grid(row=4, column=3, sticky=tk.W + tk.E)
-        self.nd_pwr_sbox = tk.Spinbox(self.window, font=font, width=5, from_=0, to=100,
-                                      command=self.sbox_handler)
-        self.nd_pwr_sbox.grid(row=4, column=4, sticky=tk.W + tk.E)
-        self.nd_pwr_sbox.bind("<KeyRelease>", self.sbox_handler)
-
-        tk.Label(self.window, text='Концентрация акцепторов Nas', font=font).grid(row=5, column=1, columnspan=4,
-                                                                                  sticky=tk.W)
-        self.nas_sbox = tk.Spinbox(self.window, font=font, width=5, from_=0, to=100, increment=0.1,
-                                   command=self.sbox_handler)
-        self.nas_sbox.grid(row=6, column=2, sticky=tk.W + tk.E)
-        self.nas_sbox.bind("<KeyRelease>", self.sbox_handler)
-
-        tk.Label(self.window, text=' * 10 ^', font=font).grid(row=6, column=3, sticky=tk.W + tk.E)
-        self.nas_pwr_sbox = tk.Spinbox(self.window, font=font, width=5, from_=0, to=100,
-                                       command=self.sbox_handler)
-        self.nas_pwr_sbox.grid(row=6, column=4, sticky=tk.W + tk.E)
-        self.nas_pwr_sbox.bind("<KeyRelease>", self.sbox_handler)
-
-        tk.Label(self.window, text='Eg = ', font=('Arial', 18)).grid(row=7, column=1, sticky=tk.E)
-        self.eg_sbox = tk.Spinbox(self.window, font=font, width=5, from_=0, to=100, increment=0.01,
-                                  command=self.sbox_handler)
-        self.eg_sbox.grid(row=7, column=2, sticky=tk.W + tk.E)
-        self.eg_sbox.bind("<KeyRelease>", self.sbox_handler)
-
-        tk.Label(self.window, text='ε = ', font=('Arial', 20)).grid(row=7, column=3, sticky=tk.E)
-        self.epsilon_sbox = tk.Spinbox(self.window, font=font, width=5, from_=0, to=100, increment=0.1,
-                                       command=self.sbox_handler)
-        self.epsilon_sbox.grid(row=7, column=4, sticky=tk.E + tk.W)
-        self.epsilon_sbox.bind("<KeyRelease>", self.sbox_handler)
-
-        tk.Label(self.window, text='Ed = ', font=('Arial', 18)).grid(row=8, column=1, sticky=tk.E)
-        self.ed_sbox = tk.Spinbox(self.window, font=font, width=5, from_=0, to=100, increment=0.01,
-                                  command=self.sbox_handler)
-        self.ed_sbox.grid(row=8, column=2, sticky=tk.W + tk.E)
-        self.ed_sbox.bind("<KeyRelease>", self.sbox_handler)
-
-        tk.Label(self.window, text='T = ', font=('Arial', 18)).grid(row=8, column=3, sticky=tk.E)
-        self.temp_sbox = tk.Spinbox(self.window, font=font, width=5, from_=0, to=math.inf,
-                                    command=self.sbox_handler)
-        self.temp_sbox.grid(row=8, column=4, sticky=tk.W + tk.E)
-        self.temp_sbox.bind("<KeyRelease>", self.sbox_handler)
-
-        tk.Label(self.window, text='Внешнее поле', font=font).grid(row=9, column=1, columnspan=4, sticky=tk.W)
-        tk.Label(self.window, text='Eout = ', font=('Arial', 18)).grid(row=10, column=3, sticky=tk.E)
-        self.eout_sbox = tk.Spinbox(self.window, font=font, width=5, from_=0, to=float(math.inf),
-                                    command=self.sbox_handler)
-        self.eout_sbox.grid(row=10, column=4, sticky=tk.W + tk.E)
-        self.eout_sbox.bind("<KeyRelease>", self.sbox_handler)
-
-        self.calc_button = tk.Button(self.window, text='Найти уровень Ферми', font=font, bg='SteelBlue1')
+        self.calc_button = tk.Button(self.window, text='Найти уровень Ферми', font=font_sbox, bg='SteelBlue1')
         self.calc_button.grid(row=11, column=1, columnspan=4)
-        self.calc_button.config(command=self.button_handler)
+        self.calc_button.config(command=self._button_handler)
 
         self._set_default()
 
     # Два разных хендлера, мб пригодитя по-отдельности использовать
-    def button_handler(self) -> None:
-        self.fermi_canvas.draw(self.calculate())
+    def _button_handler(self) -> None:
+        # self.fermi_canvas.draw(self.calculate())
+        pass
 
-    def sbox_handler(self, event=None):
-        self.fermi_canvas.draw(self.calculate())
+    def _sbox_handler(self, event=None):
+        # self.fermi_canvas.draw(self.calculate())
+        pass
 
     def calculate(self) -> dict:
         # Сюда надо будет запихать кусок, который считает и пакует всё в dict
         x = np.arange(0, 5, step=0.1)  # Just for test
         exps = np.exp(x)
 
+        # args = {
+        #     "E_gap": float(self.eg_sbox.get()),  # Band gap [eV]
+        #     "epsilon": float(self.epsilon_sbox.get()),  # Dielectric permittivity
+        #     "m_h": float(self.mv_sbox.get()),  # Effective hole mass [m_0]
+        #     "m_e": float(self.mc_sbox.get()),  # Effective electron mass [m_0]
+        #     "E_d": float(self.ed_sbox.get()),  # Donors level [eV]
+        #     "N_d0": float(self.nd_sbox.get()) * 10**self.nd_pwr_sbox.get(),  # Concentration of donors [cm^(-3)]
+        #     "E_as": float(self.nas_sbox.get()),  # Surface acceptors level [eV]
+        #     "N_as": float(N_as.get()) * coef_phys_parameters['N_as'],  # Concentration of surface acceptors [cm^(-3)]
+        #     "T": float(T.get()),  # Temperature [K]
+        #     "E_out": float(E_out.get()) * coef_phys_parameters['E_out'],  # External electric field
+        # }
+        # return data
         data = {'x': x,
                 'Ec': exps,
                 'Ef': (exps + 1.0),

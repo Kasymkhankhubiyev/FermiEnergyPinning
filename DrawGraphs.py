@@ -8,8 +8,8 @@ class FermiCanvas:
     def __init__(self, canvas: tk.Canvas) -> None:
         self.window = canvas
         self.fig = Figure()
-        self.fig.set_figheight(10)   # Задаю размер графа
-        self.fig.set_figwidth(14)
+        self.fig.set_figheight(7)   # Задаю размер графа
+        self.fig.set_figwidth(9)
         self.ax = self.fig.add_subplot(1, 1, 1)
         self.canvas = FigureCanvasTkAgg(self.fig, self.window)
         self.ax.grid()
