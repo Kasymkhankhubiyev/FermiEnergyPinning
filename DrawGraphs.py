@@ -2,6 +2,7 @@
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import tkinter as tk
 from matplotlib.figure import Figure
+from exceptions import CantProcessCalculations
 
 
 class FermiCanvas:
@@ -20,14 +21,21 @@ class FermiCanvas:
 
     def draw(self, data: dict) -> None:
         self.ax.cla()
-        self.ax.plot(data['x'], data['Ec'], c='red', label='Conduction Band')
-        self.ax.plot(data['x'], data['Ef'], c='darkorange', label='Fermi Energy')
-        self.ax.plot(data['x'], data['Ea'], c='green', label='Acceptor Energy')
-        self.ax.plot(data['x'], data['Ed'], c='blue', label='Donor Energy')
-        self.ax.plot(data['x'], data['Ev'], c='purple', label='Valence Band')
+        self.ax.set_xlabel("x [cm]")
+        self.ax.set_ylabel("E [eV]")
+        # self.ax.grid()
+        if data['message'] == 'ok':
+            self.ax.plot(data['x_s'], data['E_c_s'], c='red', label='Conduction Band')
+            self.ax.plot(data['x_s'], data['E_f_s'], c='darkorange', label='Fermi Energy')
+            self.ax.plot(data['x_s'][0:round(len(data['x_s']) / 2)],
+                    data['E_as_s'][0:round(len(data['E_as_s']) / 2)], c='green', label='Acceptor Energy')
+            self.ax.plot(data['x_s'], data['E_d_s'], c='blue', label='Donor Energy')
+            self.ax.plot(data['x_s'], data['E_v_s'], c='purple', label='Valence Band')
 
-        self.ax.axhline(data['phi'], c='k', linestyle='dashed')
-        self.ax.axvline(data['W'], c='k', linestyle='dashed')
+            self.ax.axhline(data['phi'], c='k', linestyle='dashed')
+            self.ax.axvline(data['W'], c='k', linestyle='dashed')
 
-        self.ax.legend(fontsize=10, loc='right')
-        self.canvas.draw()
+            self.ax.legend(fontsize=10, loc='right')
+            self.canvas.draw()
+        else:
+            raise CantProcessCalculations('Cannot calculate parameters')

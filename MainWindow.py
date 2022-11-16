@@ -1,8 +1,11 @@
 import math
 import tkinter as tk
 from tkinter import ttk
+from tkinter import messagebox
 import SemoconductorsTemplates as st
 import DrawGraphs as dg
+from project import calculations
+from exceptions import *
 
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
@@ -84,7 +87,7 @@ class MainWindow:
         self._clear_entry(entry=self.eout_sbox)
         self.eout_sbox.insert(0, 1000)
 
-        self.fermi_canvas.draw(self._calculate())
+        self.fermi_canvas.draw(calculations.calculate(self._calculate()))
 
     def _set_templetes_combobox_block(self, font_label, font_sbox) -> None:
         tk.Label(self.window, text='Полупроводник: ', font=font_sbox).grid(row=1, column=1, columnspan=3, sticky=tk.W)
@@ -219,15 +222,6 @@ class MainWindow:
 
         self._set_default()
 
-    # Два разных хендлера, мб пригодитя по-отдельности использовать
-    def _button_handler(self) -> None:
-        # self.fermi_canvas.draw(self.calculate())
-        pass
-
-    def _sbox_handler(self, event=None):
-        # self.fermi_canvas.draw(self.calculate())
-        pass
-
     def _calculate(self) -> dict:
         # Сюда надо будет запихать кусок, который считает и пакует всё в dict
         x = np.arange(0, 5, step=0.1)  # Just for test
@@ -246,13 +240,13 @@ class MainWindow:
             "E_out": float(self.eout_sbox.get())  # External electric field
         }
         return args
-        # data = {'x': x,
-        #         'Ec': exps,
-        #         'Ef': (exps + 1.0),
-        #         'Ea': (exps + 5.0),
-        #         'Ed': (exps + 10.0),
-        #         'Ev': 10 * x ** 2,
-        #         'W': 1,
-        #         'phi': 0}
-        #
-        # return data
+
+        # Два разных хендлера, мб пригодитя по-отдельности использовать
+    def _button_handler(self) -> None:
+        try:
+            self.fermi_canvas.draw(calculations.calculate(self._calculate()))
+        except CantProcessCalculations:
+            messagebox.showerror(message=f'{CantProcessCalculations.args}')
+
+    def _sbox_handler(self, event=None):
+        self.fermi_canvas.draw(calculations.calculate(self._calculate()))
