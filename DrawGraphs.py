@@ -38,4 +38,4 @@ class FermiCanvas:
             self.ax.legend(fontsize=10, loc='right')
             self.canvas.draw()
         else:
-            raise CantProcessCalculations('Cannot calculate parameters')
+            raise CantProcessCalculations

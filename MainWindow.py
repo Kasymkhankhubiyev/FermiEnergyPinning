@@ -246,7 +246,10 @@ class MainWindow:
         try:
             self.fermi_canvas.draw(calculations.calculate(self._calculate()))
         except CantProcessCalculations:
-            messagebox.showerror(message=f'{CantProcessCalculations.args}')
+            messagebox.showerror(message='Cannot process calculations for a given data')
 
     def _sbox_handler(self, event=None):
-        self.fermi_canvas.draw(calculations.calculate(self._calculate()))
+        try:
+            self.fermi_canvas.draw(calculations.calculate(self._calculate()))
+        except CantProcessCalculations:
+            messagebox.showerror(message='Cannot process calculations for a given data')
