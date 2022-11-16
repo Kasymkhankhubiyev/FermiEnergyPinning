@@ -19,7 +19,7 @@ class MainWindow:
         self.mc_sbox, self.mv_sbox = None, None
         self.nd_sbox, self.nd_pwr_sbox = None, None
         self.nas_sbox, self.nas_pwr_sbox = None, None
-        self.eg_sbox, self.epsilon_sbox , self.eas_sbox = None, None, None
+        self.eg_sbox, self.epsilon_sbox, self.eas_sbox = None, None, None
         self.ed_sbox, self.eout_sbox, self.temp_sbox = None, None, None
 
         self.calc_button = None
@@ -84,7 +84,7 @@ class MainWindow:
         self._clear_entry(entry=self.eout_sbox)
         self.eout_sbox.insert(0, 1000)
 
-        self.fermi_canvas.draw(self.calculate())
+        self.fermi_canvas.draw(self._calculate())
 
     def _set_templetes_combobox_block(self, font_label, font_sbox) -> None:
         tk.Label(self.window, text='Полупроводник: ', font=font_sbox).grid(row=1, column=1, columnspan=3, sticky=tk.W)
@@ -169,10 +169,10 @@ class MainWindow:
     def _set_surface_acceptors_energy_level_sbox(self, font_label, font_sbox) -> None:
         # уровень энергии доноров, отсчитывается от дна зоны проводимости, измеряется в эВ
         tk.Label(self.window, text='Eas = ', font=font_label).grid(row=9, column=1, sticky=tk.E)
-        self.ed_sbox = tk.Spinbox(self.window, font=font_sbox, width=5, from_=0, to=100, increment=0.01,
-                                  command=self._sbox_handler)
-        self.ed_sbox.grid(row=9, column=2, sticky=tk.W + tk.E)
-        self.ed_sbox.bind("<KeyRelease>", self._sbox_handler)
+        self.eas_sbox = tk.Spinbox(self.window, font=font_sbox, width=5, from_=0, to=100, increment=0.01,
+                                   command=self._sbox_handler)
+        self.eas_sbox.grid(row=9, column=2, sticky=tk.W + tk.E)
+        self.eas_sbox.bind("<KeyRelease>", self._sbox_handler)
 
     def _set_temperature_sbox(self, font_label, font_sbox) -> None:
         # Температура в Кельвинах
@@ -190,7 +190,6 @@ class MainWindow:
                                     command=self._sbox_handler)
         self.eout_sbox.grid(row=10, column=4, sticky=tk.W + tk.E)
         self.eout_sbox.bind("<KeyRelease>", self._sbox_handler)
-
 
     def draw_window(self) -> None:
         # Надо будет поставить более-менее адекватные пределы и размеры шага
@@ -229,31 +228,31 @@ class MainWindow:
         # self.fermi_canvas.draw(self.calculate())
         pass
 
-    def calculate(self) -> dict:
+    def _calculate(self) -> dict:
         # Сюда надо будет запихать кусок, который считает и пакует всё в dict
         x = np.arange(0, 5, step=0.1)  # Just for test
         exps = np.exp(x)
 
-        # args = {
-        #     "E_gap": float(self.eg_sbox.get()),  # Band gap [eV]
-        #     "epsilon": float(self.epsilon_sbox.get()),  # Dielectric permittivity
-        #     "m_h": float(self.mv_sbox.get()),  # Effective hole mass [m_0]
-        #     "m_e": float(self.mc_sbox.get()),  # Effective electron mass [m_0]
-        #     "E_d": float(self.ed_sbox.get()),  # Donors level [eV]
-        #     "N_d0": float(self.nd_sbox.get()) * 10**self.nd_pwr_sbox.get(),  # Concentration of donors [cm^(-3)]
-        #     "E_as": float(self.nas_sbox.get()),  # Surface acceptors level [eV]
-        #     "N_as": float(N_as.get()) * coef_phys_parameters['N_as'],  # Concentration of surface acceptors [cm^(-3)]
-        #     "T": float(T.get()),  # Temperature [K]
-        #     "E_out": float(E_out.get()) * coef_phys_parameters['E_out'],  # External electric field
-        # }
+        args = {
+            "E_gap": float(self.eg_sbox.get()),  # Band gap [eV]
+            "epsilon": float(self.epsilon_sbox.get()),  # Dielectric permittivity
+            "m_h": float(self.mv_sbox.get()),  # Effective hole mass [m_0]
+            "m_e": float(self.mc_sbox.get()),  # Effective electron mass [m_0]
+            "E_d": float(self.ed_sbox.get()),  # Donors level [eV]
+            "N_d0": float(self.nd_sbox.get()) * 10 **int(self.nd_pwr_sbox.get()),  # Concentration of donors [cm^(-3)]
+            "E_as": float(self.eas_sbox.get()),  # Surface acceptors level [eV]
+            "N_as": float(self.nas_sbox.get()) * 10**int(self.nas_pwr_sbox.get()),  # Concentration of surface acceptors [cm^(-3)]
+            "T": float(self.temp_sbox.get()),  # Temperature [K]
+            "E_out": float(self.eout_sbox.get())  # External electric field
+        }
+        return args
+        # data = {'x': x,
+        #         'Ec': exps,
+        #         'Ef': (exps + 1.0),
+        #         'Ea': (exps + 5.0),
+        #         'Ed': (exps + 10.0),
+        #         'Ev': 10 * x ** 2,
+        #         'W': 1,
+        #         'phi': 0}
+        #
         # return data
-        data = {'x': x,
-                'Ec': exps,
-                'Ef': (exps + 1.0),
-                'Ea': (exps + 5.0),
-                'Ed': (exps + 10.0),
-                'Ev': 10 * x ** 2,
-                'W': 1,
-                'phi': 0}
-
-        return data
