@@ -5,7 +5,7 @@ from tkinter import messagebox
 import SemoconductorsTemplates as st
 import DrawGraphs as dg
 from project import calculations
-from exceptions import *
+from exceptions import CantProcessCalculations
 
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
@@ -244,12 +244,16 @@ class MainWindow:
         # Два разных хендлера, мб пригодитя по-отдельности использовать
     def _button_handler(self) -> None:
         try:
-            self.fermi_canvas.draw(calculations.calculate(self._calculate()))
+            data = calculations.calculate(self._calculate())
+            self.fermi_canvas.draw(data)
         except CantProcessCalculations:
-            messagebox.showerror(message='Cannot process calculations for a given data')
+            pass
+            # messagebox.showerror(message='Cannot process calculations for a given data')
 
     def _sbox_handler(self, event=None):
         try:
-            self.fermi_canvas.draw(calculations.calculate(self._calculate()))
+            data = calculations.calculate(self._calculate())
+            self.fermi_canvas.draw(data)
         except CantProcessCalculations:
-            messagebox.showerror(message='Cannot process calculations for a given data')
+            pass
+            # messagebox.showerror(message='Cannot process calculations for a given data')
