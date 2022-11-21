@@ -13,7 +13,7 @@ def _check_parameters(parameters, Nc, Nv):
         raise SurfaceStatesValueException(e_as=parameters['E_as'], e_g=parameters['E_gap'])
     if parameters['E_out'] * 3.3 * 1e-5 > parameters['N_as'] * constants.e:
         raise ExternalFieldValueException(e_out=parameters['E_out'] * 3.3 * 1e-5, e_in=parameters['N_as'] * constants.e)
-    if (parameters['N_d0'] > Nc or parameters['N_d0'] > Nv):
+    if parameters['N_d0'] > Nc or parameters['N_d0'] > Nv:
         raise DonorConcentrationValueException(nd=parameters['N_d0'], nc=Nc, nv=Nv)
     # return message
 
