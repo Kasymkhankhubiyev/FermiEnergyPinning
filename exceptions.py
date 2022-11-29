@@ -30,3 +30,11 @@ class DonorConcentrationValueException(ParamsValueException):
             f'The Nd > Nc or Nd > Nv'
             f'Nd = {nd}, Nc = {nc}, Nv = {nv}'
         )
+
+
+class CantCalculateWDepth(CantProcessCalculations):
+    def __init__(self, mesg):
+        super().__init__(
+            f'Cannot solve an equation to find W'
+            f'{mesg}'
+        )

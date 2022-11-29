@@ -2,7 +2,7 @@ import numpy as np
 from fompy import constants, materials, models
 from scipy.optimize import fsolve
 from exceptions import SurfaceStatesValueException, ExternalFieldValueException, DonorConcentrationValueException
-from exceptions import CantProcessCalculations
+from exceptions import CantProcessCalculations, CantCalculateWDepth
 from tkinter import messagebox
 
 
@@ -41,7 +41,9 @@ def W(phi, parameters):
 
 def solve_equation_find_phi(parameters):
     x_0 = 0.001
-    phi = fsolve(_equation_for_phi, x_0, args=parameters)
+    phi, infodict, iter, mesg = fsolve(_equation_for_phi, x_0, args=parameters, full_output=True)
+    if iter != 1:
+        raise CantCalculateWDepth(mesg=mesg)
     return phi[0]
 
 
@@ -117,3 +119,5 @@ def calculate(parameters) -> dict:
     except ExternalFieldValueException as e:
         messagebox.showerror(title='Error...', message=f'{e.args}')
         raise CantProcessCalculations
+    except CantCalculateWDepth as e:
+        messagebox.showerror(title='Error...', message=f'{e.args}')
