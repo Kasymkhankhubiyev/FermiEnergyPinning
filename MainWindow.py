@@ -64,7 +64,7 @@ class MainWindow:
 
         # Calculations
         try:
-            data = calculations.calculate(self._calculate())
+            data = self._calculate()
             self.fermi_canvas.draw(data)
         except CantProcessCalculations:
             pass
@@ -93,12 +93,12 @@ class MainWindow:
         self.temp_sbox.insert(0, 300)
 
         self._clear_entry(entry=self.eout_sbox)
-        self.eout_sbox.insert(0, 1)
+        self.eout_sbox.insert(0, 1.0)
 
-        self.fermi_canvas.draw(calculations.calculate(self._calculate()))
+        self.fermi_canvas.draw(self._calculate())
 
     def _set_templetes_combobox_block(self, font_label, font_sbox) -> None:
-        tk.Label(self.window, text='Полупроводник: ', font=font_sbox).grid(row=1, column=1, columnspan=3, sticky=tk.W)
+        tk.Label(self.window, text='Полупроводник: ', font=font_label).grid(row=1, column=1, columnspan=3, sticky=tk.W)
         self.combobox = ttk.Combobox(self.window, values=['Si', 'Ge', 'GaAs', 'AlAs', 'GaP', 'InP', 'GaSb', 'InSb'],
                                      font=font_sbox, width=5)
         self.combobox.grid(row=1, column=4, sticky=tk.W + tk.E)
@@ -122,7 +122,7 @@ class MainWindow:
 
     def _set_donors_concentration_sbox(self, font_label, font_sbox) -> None:
         # концентрация доноров, то же самое что и N_{d0}
-        tk.Label(self.window, text='Концентрация доноров Nd', font=font_sbox).grid(row=3, column=1, columnspan=4,
+        tk.Label(self.window, text='Концентрация доноров Nd', font=font_label).grid(row=3, column=1, columnspan=4,
                                                                                    sticky=tk.W)
         self.nd_sbox = tk.Spinbox(self.window, font=font_sbox, width=5, from_=0, to=100, increment=0.1,
                                   command=self._sbox_handler)
@@ -130,7 +130,7 @@ class MainWindow:
         self.nd_sbox.bind("<KeyRelease>", self._sbox_handler)
 
         # порядок концентрации доноров
-        tk.Label(self.window, text=' * 10 ^', font=font_sbox).grid(row=4, column=3, sticky=tk.W + tk.E)
+        tk.Label(self.window, text=' * 10 ^', font=font_label).grid(row=4, column=3, sticky=tk.W + tk.E)
         self.nd_pwr_sbox = tk.Spinbox(self.window, font=font_sbox, width=5, from_=0, to=100,
                                       command=self._sbox_handler)
         self.nd_pwr_sbox.grid(row=4, column=4, sticky=tk.W + tk.E)
@@ -138,7 +138,7 @@ class MainWindow:
 
     def _set_acceptors_concentration_sbox(self, font_label, font_sbox) -> None:
         # концентрация акцепторов N_{a}
-        tk.Label(self.window, text='Концентрация акцепторов Nas', font=font_sbox).grid(row=5, column=1, columnspan=4,
+        tk.Label(self.window, text='Концентрация акцепторов Nas', font=font_label).grid(row=5, column=1, columnspan=4,
                                                                                        sticky=tk.W)
         self.nas_sbox = tk.Spinbox(self.window, font=font_sbox, width=5, from_=0, to=100, increment=0.1,
                                    command=self._sbox_handler)
@@ -146,7 +146,7 @@ class MainWindow:
         self.nas_sbox.bind("<KeyRelease>", self._sbox_handler)
 
         # порядок концентрации акцепторов
-        tk.Label(self.window, text=' * 10 ^', font=font_sbox).grid(row=6, column=3, sticky=tk.W + tk.E)
+        tk.Label(self.window, text=' * 10 ^', font=font_label).grid(row=6, column=3, sticky=tk.W + tk.E)
         self.nas_pwr_sbox = tk.Spinbox(self.window, font=font_sbox, width=5, from_=0, to=100,
                                        command=self._sbox_handler)
         self.nas_pwr_sbox.grid(row=6, column=4, sticky=tk.W + tk.E)
@@ -163,7 +163,7 @@ class MainWindow:
 
     def _set_epsilon_sbox(self, font_label, font_sbox) -> None:
         # диэлектрическая проницаемость полупроводника
-        tk.Label(self.window, text='ε = ', font=font_sbox).grid(row=7, column=3, sticky=tk.E)
+        tk.Label(self.window, text='ε = ', font=font_label).grid(row=7, column=3, sticky=tk.E)
         self.epsilon_sbox = tk.Spinbox(self.window, font=font_sbox, width=5, from_=0, to=100, increment=0.1,
                                        command=self._sbox_handler)
         self.epsilon_sbox.grid(row=7, column=4, sticky=tk.E + tk.W)
@@ -197,16 +197,14 @@ class MainWindow:
         # Величина внешнего поля
         # tk.Label(self.window, text='Внешнее поле', font=font_sbox).grid(row=10, column=1, columnspan=4, sticky=tk.W)
         tk.Label(self.window, text='Eout = ', font=font_label).grid(row=10, column=1, sticky=tk.E)
-        self.eout_sbox = tk.Spinbox(self.window, font=font_sbox, width=5, from_=0, to=float(math.inf),
-                                    command=self._sbox_handler)
+        self.eout_sbox = tk.Spinbox(self.window, font=font_sbox, width=5, from_=0, to=1e10,
+                                    command=self._sbox_handler, increment=0.01)
         self.eout_sbox.grid(row=10, column=2, sticky=tk.W + tk.E)
-        tk.Label(self.window, text='* 10^4', font=font_sbox).grid(row=10, column=3, columnspan=4, sticky=tk.W)
-        tk.Label(self.window, text='V/m', font=font_sbox).grid(row=10, column=4, columnspan=4, sticky=tk.W)
+        tk.Label(self.window, text='* 10^4', font=font_label).grid(row=10, column=3, columnspan=4, sticky=tk.W)
+        tk.Label(self.window, text='V/m', font=font_label).grid(row=10, column=4, columnspan=4, sticky=tk.W)
         self.eout_sbox.bind("<KeyRelease>", self._sbox_handler)
 
     def draw_window(self) -> None:
-        # Надо будет поставить более-менее адекватные пределы и размеры шага
-
         self.canvas = tk.Canvas(self.window, background='white', width=650, height=600)
         self.canvas.grid(row=0, column=0, rowspan=12, padx=10, pady=10)
         self.fermi_canvas = dg.FermiCanvas(canvas=self.canvas)
@@ -245,14 +243,21 @@ class MainWindow:
             "E_as": float(self.eas_sbox.get()),  # Surface acceptors level [eV]
             "N_as": float(self.nas_sbox.get()) * 10**int(self.nas_pwr_sbox.get()),  # Concentration of surface acceptors [cm^(-3)]
             "T": float(self.temp_sbox.get()),  # Temperature [K]
-            "E_out": float(int(self.eout_sbox.get()) * 10**4)  # External electric field
+            "E_out": float(float(self.eout_sbox.get()) * 10**4)  # External electric field
         }
-        return args
+        data = calculations.calculate(args)
+        # print(data)
+        w = data['W']
+        Ef = data['E_f']
+        phi = data['phi']
+        tk.Label(self.window, text=(f"W =  {w}; phi = {phi}; Ef = {Ef}"), font=('Arial', 18)).grid(row=12, column=0, columnspan=5, sticky=tk.W + tk.E)
 
-        # Два разных хендлера, мб пригодитя по-отдельности использовать
+
+        return data
+
     def _button_handler(self) -> None:
         try:
-            data = calculations.calculate(self._calculate())
+            data = self._calculate()
             self.fermi_canvas.draw(data)
         except CantProcessCalculations:
             pass
@@ -260,7 +265,7 @@ class MainWindow:
 
     def _sbox_handler(self, event=None):
         try:
-            data = calculations.calculate(self._calculate())
+            data = self._calculate()
             self.fermi_canvas.draw(data)
         except CantProcessCalculations:
             pass

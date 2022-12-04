@@ -103,6 +103,7 @@ def calculate(parameters) -> dict:
 
         try:
             parameters['E_f'] = semiconductor.fermi_level(T)
+            results['E_f'] = parameters['E_f']
             results['phi'] = solve_equation_find_phi(parameters)  # eV
             results['W'] = W(results['phi'], parameters)  # cm
             results['x_s'], results['E_f_s'], results['E_v_s'], results['E_c_s'], results['E_d_s'], \
