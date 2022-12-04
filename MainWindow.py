@@ -224,8 +224,6 @@ class MainWindow:
 
     def _calculate(self) -> dict:
         # Сюда надо будет запихать кусок, который считает и пакует всё в dict
-        x = np.arange(0, 5, step=0.1)  # Just for test
-        exps = np.exp(x)
 
         args = {
             "E_gap": float(self.eg_sbox.get()),  # Band gap [eV]
