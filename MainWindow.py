@@ -62,6 +62,14 @@ class MainWindow:
         elif selected == 'InSb':
             self._set_template_attributes(template=st.InSb())
 
+        # Calculations
+        try:
+            data = calculations.calculate(self._calculate())
+            self.fermi_canvas.draw(data)
+        except CantProcessCalculations:
+            pass
+            # messagebox.showerror(message='Cannot process calculations for a given data')
+
     def _set_default(self) -> None:
         self.combobox.current(0)  # Default value
         self._set_template_attributes(template=st.Si())
