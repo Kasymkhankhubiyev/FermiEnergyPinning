@@ -93,7 +93,7 @@ class MainWindow:
         self.temp_sbox.insert(0, 300)
 
         self._clear_entry(entry=self.eout_sbox)
-        self.eout_sbox.insert(0, 1000)
+        self.eout_sbox.insert(0, 1)
 
         self.fermi_canvas.draw(calculations.calculate(self._calculate()))
 
@@ -195,11 +195,13 @@ class MainWindow:
 
     def _set_external_field_value_sbox(self, font_label, font_sbox) -> None:
         # Величина внешнего поля
-        tk.Label(self.window, text='Внешнее поле', font=font_sbox).grid(row=10, column=1, columnspan=4, sticky=tk.W)
-        tk.Label(self.window, text='Eout = ', font=font_label).grid(row=10, column=3, sticky=tk.E)
+        # tk.Label(self.window, text='Внешнее поле', font=font_sbox).grid(row=10, column=1, columnspan=4, sticky=tk.W)
+        tk.Label(self.window, text='Eout = ', font=font_label).grid(row=10, column=1, sticky=tk.E)
         self.eout_sbox = tk.Spinbox(self.window, font=font_sbox, width=5, from_=0, to=float(math.inf),
                                     command=self._sbox_handler)
-        self.eout_sbox.grid(row=10, column=4, sticky=tk.W + tk.E)
+        self.eout_sbox.grid(row=10, column=2, sticky=tk.W + tk.E)
+        tk.Label(self.window, text='* 10^4', font=font_sbox).grid(row=10, column=3, columnspan=4, sticky=tk.W)
+        tk.Label(self.window, text='V/m', font=font_sbox).grid(row=10, column=4, columnspan=4, sticky=tk.W)
         self.eout_sbox.bind("<KeyRelease>", self._sbox_handler)
 
     def draw_window(self) -> None:
@@ -243,7 +245,7 @@ class MainWindow:
             "E_as": float(self.eas_sbox.get()),  # Surface acceptors level [eV]
             "N_as": float(self.nas_sbox.get()) * 10**int(self.nas_pwr_sbox.get()),  # Concentration of surface acceptors [cm^(-3)]
             "T": float(self.temp_sbox.get()),  # Temperature [K]
-            "E_out": float(self.eout_sbox.get())  # External electric field
+            "E_out": float(int(self.eout_sbox.get()) * 10**4)  # External electric field
         }
         return args
 
