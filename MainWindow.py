@@ -6,6 +6,7 @@ import SemoconductorsTemplates as st
 import DrawGraphs as dg
 from project import calculations
 from exceptions import CantProcessCalculations
+from fompy.constants import eV
 
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
@@ -248,8 +249,13 @@ class MainWindow:
         data = calculations.calculate(args)
         # print(data)
         w = data['W']
-        Ef = data['E_f']
+        Ef = data['E_f']/eV
         phi = data['phi']
+
+        w = float("{:.3e}".format(w))
+        Ef = float("{:.3e}".format(Ef))
+        phi = float("{:.3e}".format(phi))
+
         tk.Label(self.window, text=(f"W =  {w}; phi = {phi}; Ef = {Ef}"), font=('Arial', 18)).grid(row=12, column=0, columnspan=5, sticky=tk.W + tk.E)
 
 
