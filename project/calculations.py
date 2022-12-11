@@ -92,7 +92,7 @@ def calculate(parameters) -> dict:
                                          parameters['E_gap'] * constants.eV, eps=parameters['epsilon'], chi=None)
     T = parameters['T']
     try:
-        _check_parameters(parameters, semiconductor.Nc(T), semiconductor.Nv(T))
+        # _check_parameters(parameters, semiconductor.Nc(T), semiconductor.Nv(T))
         results = dict(message='ok', x_s=0, E_f_s=0, E_v_s=0, E_c_s=0, E_d_s=0, E_as_s=0, phi=0, W=0)
 
         # СГС

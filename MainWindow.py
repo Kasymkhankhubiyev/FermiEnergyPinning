@@ -256,8 +256,8 @@ class MainWindow:
         Ef = float("{:.3e}".format(Ef))
         phi = float("{:.3e}".format(phi))
 
-        tk.Label(self.window, text=(f"W =  {w}; phi = {phi}; Ef = {Ef}"), font=('Arial', 18)).grid(row=18, column=0, sticky=tk.W + tk.E)
-
+        tk.Label(self.window, text=f"W = {w}; phi = {phi}; Ef = {Ef}", font=('Arial', 18)).grid(row=18, column=0,
+                                                                                                sticky=tk.W + tk.E)
 
         return data
 
