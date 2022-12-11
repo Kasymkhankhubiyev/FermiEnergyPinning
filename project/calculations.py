@@ -53,10 +53,12 @@ def data_for_graph(phi, W, parameters):  # phi [eV], W [cm]
     if W != 0:
         h = W * 2 / N  # step
 
-    # parabola: ax ^ 2 + bx + c
-    c = phi
-    a = c / (W ** 2)
-    b = -2 * W * a
+    a, b, c = None, None, None
+    if W != 0:
+        # parabola: ax ^ 2 + bx + c
+        c = phi
+        a = c / (W ** 2)
+        b = -2 * W * a
 
     x_s = []  # Coordinate
     E_f_s = []  # Fermi energy
