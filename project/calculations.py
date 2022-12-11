@@ -49,7 +49,9 @@ def solve_equation_find_phi(parameters):
 
 def data_for_graph(phi, W, parameters):  # phi [eV], W [cm]
     N = 30  # knot number
-    h = W * 2 / N  # step
+    h = 1e-5 * 2 / N
+    if W != 0:
+        h = W * 2 / N  # step
 
     # parabola: ax ^ 2 + bx + c
     c = phi
@@ -73,16 +75,21 @@ def data_for_graph(phi, W, parameters):  # phi [eV], W [cm]
         E_f_s.append(E_f)
         E_as_s.append(E_as)
 
-        if x_s[i] > W:  # flat zone
+        if W != 0:
+            if x_s[i] > W:  # flat zone
+                E_v_s.append(0)
+                E_c_s.append(E_gap)
+                E_d_s.append(E_d)
+
+            else:  # zone with parabola: flat + parabola bend
+                bend = a * x_s[i] ** 2 + b * x_s[i] + c
+                E_v_s.append(bend)
+                E_c_s.append(E_gap + bend)
+                E_d_s.append(E_d + bend)
+        elif W == 0:
             E_v_s.append(0)
             E_c_s.append(E_gap)
             E_d_s.append(E_d)
-
-        else:  # zone with parabola: flat + parabola bend
-            bend = a * x_s[i] ** 2 + b * x_s[i] + c
-            E_v_s.append(bend)
-            E_c_s.append(E_gap + bend)
-            E_d_s.append(E_d + bend)
 
     return x_s, E_f_s, E_v_s, E_c_s, E_d_s, E_as_s
 
@@ -104,7 +111,10 @@ def calculate(parameters) -> dict:
         try:
             parameters['E_f'] = semiconductor.fermi_level(T)
             results['E_f'] = parameters['E_f']
-            results['phi'] = solve_equation_find_phi(parameters)  # eV
+            if parameters['N_as'] != 0:
+                results['phi'] = solve_equation_find_phi(parameters)  # eV
+            elif parameters['N_as'] == 0:
+                results['phi'] = 0
             results['W'] = W(results['phi'], parameters)  # cm
             results['x_s'], results['E_f_s'], results['E_v_s'], results['E_c_s'], results['E_d_s'], \
                 results['E_as_s'] = data_for_graph(results['phi'], results['W'], parameters)
