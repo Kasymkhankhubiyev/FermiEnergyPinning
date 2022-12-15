@@ -242,7 +242,7 @@ class MainWindow:
             "E_as": float(self.eas_sbox.get()),  # Surface acceptors level [eV]
             "N_as": float(self.nas_sbox.get()) * 10**int(self.nas_pwr_sbox.get()),  # Concentration of surface acceptors [cm^(-3)]
             "T": float(self.temp_sbox.get()),  # Temperature [K]
-            "E_out": float(float(self.eout_sbox.get()) * 10**4)  # External electric field
+            "E_out": float(float(self.eout_sbox.get()) * 1e4)  # External electric field
         }
 
         args['E_d'] = args['E_gap'] - args['E_d']

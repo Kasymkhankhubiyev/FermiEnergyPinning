@@ -4,6 +4,7 @@ from scipy.optimize import fsolve
 from exceptions import SurfaceStatesValueException, ExternalFieldValueException, DonorConcentrationValueException
 from exceptions import CantProcessCalculations, CantCalculateWDepth
 from tkinter import messagebox
+# from bandbend import calculate_band_bend
 
 
 def _check_parameters(parameters, Nc, Nv):
@@ -26,8 +27,7 @@ def _equation_for_phi_left(x, parameters):
 def _equation_for_phi_right(x, parameters):
     x_erg = x * constants.eV
     return (parameters['N_as'] * (1 / (1 + np.exp((parameters['E_as'] + x_erg - parameters['E_f'])
-                                                  / (constants.k * parameters['T'])))) + parameters['E_out'] / (
-                        4 * np.pi * constants.e))
+            / (constants.k * parameters['T'])))) + parameters['E_out'] / (4 * np.pi * constants.e))
 
 
 def _equation_for_phi(x, parameters):
@@ -37,6 +37,11 @@ def _equation_for_phi(x, parameters):
 def W(phi, parameters):
     phi_erg = phi * constants.eV
     return np.sqrt(parameters['epsilon'] * phi_erg / (parameters['N_d0'] * 2 * np.pi * pow(constants.e, 2)))
+
+
+def w_width(delta_phi: float, epsilon: float, nd: float) -> float:
+    return np.sqrt(delta_phi * 1.6e-19 * 2 * 8.8e-14 * epsilon / (1.6e-19**2 * nd))
+
 
 
 def solve_equation_find_phi(parameters):
@@ -95,6 +100,10 @@ def data_for_graph(phi, W, parameters):  # phi [eV], W [cm]
 
     return x_s, E_f_s, E_v_s, E_c_s, E_d_s, E_as_s
 
+def calc_phi_without_nas(parameters):
+    
+    return (parameters['E_out'] / 3.3e-5 / 1e2 / (4 * np.pi * 1.6e-19))**2 * (2 * np.pi * 1.6e-19**2 * 8.8e-14) / parameters['epsilon'] / parameters['N_d0'] * 1e19
+
 
 def calculate(parameters) -> dict:
     semiconductor = models.Semiconductor(parameters['m_e'] * constants.me, parameters['m_h'] * constants.me,
@@ -108,7 +117,7 @@ def calculate(parameters) -> dict:
         parameters['E_gap'] = parameters['E_gap'] * constants.eV
         parameters['E_d'] = parameters['E_d'] * constants.eV
         parameters['E_as'] = parameters['E_as'] * constants.eV
-        parameters['E_out'] = parameters['E_out'] * 3.3 * 1e-5
+        parameters['E_out'] = parameters['E_out'] * 3.3e-5  # 1 V/m = 3.3e-5 СГСЭ-ед заряда
 
         try:
             parameters['E_f'] = semiconductor.fermi_level(T)
@@ -116,8 +125,9 @@ def calculate(parameters) -> dict:
             if parameters['N_as'] != 0:
                 results['phi'] = solve_equation_find_phi(parameters)  # eV
             elif parameters['N_as'] == 0:
-                results['phi'] = 0
-            results['W'] = W(results['phi'], parameters)  # cm
+                results['phi'] = calc_phi_without_nas(parameters)
+            results['W'] = w_width(delta_phi=results['phi'], epsilon=parameters['epsilon'], nd=parameters['N_d0']) # W(results['phi'], parameters)  # cm
+            print(f"width W:  {results['W']}")
             results['x_s'], results['E_f_s'], results['E_v_s'], results['E_c_s'], results['E_d_s'], \
                 results['E_as_s'] = data_for_graph(results['phi'], results['W'], parameters)
             return results

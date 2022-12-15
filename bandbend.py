@@ -196,7 +196,7 @@ def bend_methods() -> list:
 
 
 def calculate_band_bend(epsilon: float, Nd: float, t: float, Nas: float, Eas: float, Eout: float, method: str,
-                        Ef: float, phi0: float, tolerance=1e-7, phi1=None, delta=1e-3) -> tuple:
+                        Ef: float, phi0: float, tolerance=1e-7, phi1=None, delta=1e-3) -> float:
 
     methods = ['dichotomy', 'newtown', 'fixed-point', 'secant']
     bend, counter = None, 0
@@ -221,7 +221,7 @@ def calculate_band_bend(epsilon: float, Nd: float, t: float, Nas: float, Eas: fl
             raise CantMatchMethod(message=method, methods=methods)
 
         # print(f'method: [{method}]\t bend width = {bend}, \t needed {counter} iterations')
-        return bend, counter
+        return bend
 
     except CantMatchMethod as e:
         print(e.args)
