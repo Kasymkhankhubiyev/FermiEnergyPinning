@@ -6,6 +6,8 @@ from exceptions import CantProcessCalculations, CantCalculateWDepth
 from tkinter import messagebox
 # from bandbend import calculate_band_bend
 
+from FermiLevel.DonorFermiLevel import find_fermi_level
+
 
 def _check_parameters(parameters, Nc, Nv):
     # message = 'ok'
@@ -41,7 +43,6 @@ def W(phi, parameters):
 
 def w_width(delta_phi: float, epsilon: float, nd: float) -> float:
     return np.sqrt(delta_phi * 1.6e-19 * 2 * 8.8e-14 * epsilon / (1.6e-19**2 * nd))
-
 
 
 def solve_equation_find_phi(parameters):
@@ -111,7 +112,7 @@ def calculate(parameters) -> dict:
     T = parameters['T']
     try:
         # _check_parameters(parameters, semiconductor.Nc(T), semiconductor.Nv(T))
-        results = dict(message='ok', x_s=0, E_f_s=0, E_v_s=0, E_c_s=0, E_d_s=0, E_as_s=0, phi=0, W=0)
+        results = dict(message='ok', x_s=0., E_f_s=0., E_v_s=0., E_c_s=0., E_d_s=0., E_as_s=0., phi=0., W=0.)
 
         # СГС
         parameters['E_gap'] = parameters['E_gap'] * constants.eV
@@ -120,7 +121,15 @@ def calculate(parameters) -> dict:
         parameters['E_out'] = parameters['E_out'] * 3.3e-5  # 1 V/m = 3.3e-5 СГСЭ-ед заряда
 
         try:
-            parameters['E_f'] = semiconductor.fermi_level(T)
+            parameters['E_f'] = find_fermi_level(me=parameters['m_e'], mh=parameters['m_h'],
+                                                 t=parameters['T'],
+                                                 Jd=(parameters['E_gap'] - parameters['E_d']) / constants.eV,
+                                                 Efpl=parameters['E_gap'] / constants.eV / 2,
+                                                 Efneg=parameters['E_gap'] / constants.eV,
+                                                 Ec=parameters['E_gap'] / constants.eV, Ev=0, Nd=parameters['N_d0'])
+            print(parameters['E_f'])
+            parameters['E_f'] *= constants.eV
+            # parameters['E_f'] = semiconductor.fermi_level(T)
             results['E_f'] = parameters['E_f']
             if parameters['N_as'] != 0:
                 results['phi'] = solve_equation_find_phi(parameters)  # eV
