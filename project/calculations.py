@@ -4,7 +4,7 @@ from scipy.optimize import fsolve
 from exceptions import SurfaceStatesValueException, ExternalFieldValueException, DonorConcentrationValueException
 from exceptions import CantProcessCalculations, CantCalculateWDepth
 from tkinter import messagebox
-
+from scipy.optimize import root
 
 def _check_parameters(parameters, Nc, Nv):
     # message = 'ok'
@@ -31,6 +31,9 @@ def _equation_for_phi_right(x, parameters):
 
 
 def _equation_for_phi(x, parameters):
+    print("Eq: ", x*constants.eV)
+    if x<0:     # По формуле, в нуле у нас уравнение уже < 0. Упрощаем жизнь решателю.
+        x = 0
     return _equation_for_phi_left(x, parameters) - _equation_for_phi_right(x, parameters)
 
 
@@ -40,8 +43,8 @@ def W(phi, parameters):
 
 
 def solve_equation_find_phi(parameters):
-    x_0 = 0.001
-    phi, infodict, iter, mesg = fsolve(_equation_for_phi, x_0, args=parameters, full_output=True)
+    x_0 = 1e-3
+    phi, infodict, iter, mesg = fsolve(_equation_for_phi, x_0, args=parameters, full_output=True, maxfev=1000, xtol=1e-12)
     if iter != 1:
         raise CantCalculateWDepth(mesg=mesg)
     return phi[0]
@@ -99,6 +102,8 @@ def data_for_graph(phi, W, parameters):  # phi [eV], W [cm]
 def calculate(parameters) -> dict:
     semiconductor = models.Semiconductor(parameters['m_e'] * constants.me, parameters['m_h'] * constants.me,
                                          parameters['E_gap'] * constants.eV, eps=parameters['epsilon'], chi=None)
+
+    dsem = models.DopedSemiconductor(semiconductor, 0, 0, parameters['N_d0'], (parameters['E_gap']-parameters['E_d']) * constants.eV)
     T = parameters['T']
     try:
         # _check_parameters(parameters, semiconductor.Nc(T), semiconductor.Nv(T))
@@ -111,13 +116,21 @@ def calculate(parameters) -> dict:
         parameters['E_out'] = parameters['E_out'] * 3.3 * 1e-5
 
         try:
-            parameters['E_f'] = semiconductor.fermi_level(T)
+            parameters['E_f'] = dsem.fermi_level(T)
+            print("Params: ", parameters)
             results['E_f'] = parameters['E_f']
+
             if parameters['N_as'] != 0:
                 results['phi'] = solve_equation_find_phi(parameters)  # eV
             elif parameters['N_as'] == 0:
-                results['phi'] = 0
+                if parameters['N_d0'] == 0:
+                    results['phi'] = 0
+                else:
+                    results['phi'] = (parameters['E_out']**2)/(8*np.pi*parameters['N_d0']*parameters['epsilon'])
+
             results['W'] = W(results['phi'], parameters)  # cm
+            print("Results: ", results)
+
             results['x_s'], results['E_f_s'], results['E_v_s'], results['E_c_s'], results['E_d_s'], \
                 results['E_as_s'] = data_for_graph(results['phi'], results['W'], parameters)
             return results
