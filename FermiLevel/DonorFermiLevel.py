@@ -25,7 +25,6 @@ Nd=10^17 -> статистика не вырожденная:
     Nc(Si, T=300K) ~ 10^19
 Т.о. на втором участке заряд гарантировано отрицательный,
     Ef1 = (Ef+ - Ef-)/2
-
 """
 from FermiLevel.CalculateParticles import *
 
@@ -35,6 +34,9 @@ Kelvin = float
 Nc = float
 Nd = float
 eV = float
+
+def balance_func(n: float, p: float, nd_plus: float) -> float:
+    return n - p - nd_plus
 
 
 def find_fermi_level(me: me_effective, mh: mh_effective, t: Kelvin, Jd: eV, Efpl: eV, Efneg: eV, Ec: eV,
@@ -51,8 +53,11 @@ def find_fermi_level(me: me_effective, mh: mh_effective, t: Kelvin, Jd: eV, Efpl
     :return:
     """
 
-    nc = calc_Nc(me, t)
-    nv = calc_Nv(mh, t)
+    # nc = calc_Nc(me, t)
+    # nv = calc_Nv(mh, t)
+
+    nc = count_nc_nv(m_eff=me, t=t)
+    nv = count_nc_nv(m_eff=mh, t=t)
 
     a, b = Efpl, Efneg
 
@@ -60,14 +65,11 @@ def find_fermi_level(me: me_effective, mh: mh_effective, t: Kelvin, Jd: eV, Efpl
 
     n = calc_n(nc=nc, Ef=Ef, Ec=Ec, t=t)
     p = calc_p(nv=nv, Ef=Ef, Ev=Ev, t=t)
-    ndpl = calc_Ndplus(Nd=Nd, Ef=Ef, Ed=Ec - Jd, t=t)
+    ndpl = calc_Ndplus(Nd=Nd, Eg=Ec, Ef=Ef, Ed=Ec - Jd, t=t)
     q = count_Q(n=n, p=p, Nd=ndpl)
-    # print(n, p, ndpl)
-    # print(f'Nd={Nd}     nc={nc}')
 
-
-    if np.abs(q/(p + ndpl)) < 0.0001:
-        # print(f'Nd={Nd}     nc={nc}')
+    if np.abs(q/(p + ndpl)) < 1e-12:
+    # if np.abs(balance_func(n=n, p=p, nd_plus= ndpl)) < 1e-12:
         return Ef
     else:
         if q > 0:

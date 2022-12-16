@@ -44,10 +44,10 @@ def calc_p(nv: float, Ef: float, Ev: float, t: Kelvin) -> float:  # Nparticle:
     return p
 
 
-def calc_Ndplus(Nd: float, Ef: eV, Ed: eV, t: Kelvin):
+def calc_Ndplus(Nd: float, Eg: float, Ef: eV, Ed: eV, t: Kelvin):
     k = 1.38e-16  # эрг/К
 
-    ndpl = Nd / (1. + 0.5 * np.exp((Ef - Ed) / (k * 6.24e11 * t)))
+    ndpl = Nd / (1. + np.exp((Eg - Ef - Ed) / (k * 6.24e11 * t)))
     return ndpl
 
 
@@ -93,3 +93,7 @@ def convert_charges(charge: float) -> str:
     factor = round(np.log10(charge))
     body = charge / 10 ** factor
     return '{:.2f}'.format(body)+f'e{factor}'
+
+
+def count_nc_nv(m_eff: float, t: float) -> float:
+    return 2.51e19 * m_eff**1.5 * (t/300)**1.5

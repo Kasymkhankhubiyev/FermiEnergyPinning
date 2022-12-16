@@ -4,7 +4,6 @@ from scipy.optimize import fsolve
 from exceptions import SurfaceStatesValueException, ExternalFieldValueException, DonorConcentrationValueException
 from exceptions import CantProcessCalculations, CantCalculateWDepth
 from tkinter import messagebox
-# from bandbend import calculate_band_bend
 
 from FermiLevel.DonorFermiLevel import find_fermi_level
 
@@ -109,6 +108,7 @@ def calc_phi_without_nas(parameters):
 def calculate(parameters) -> dict:
     semiconductor = models.Semiconductor(parameters['m_e'] * constants.me, parameters['m_h'] * constants.me,
                                          parameters['E_gap'] * constants.eV, eps=parameters['epsilon'], chi=None)
+    pin_fermi = models.DopedSemiconductor(mat=semiconductor, Na=0, Nd=0, Ea=0, Ed=0)
     T = parameters['T']
     try:
         # _check_parameters(parameters, semiconductor.Nc(T), semiconductor.Nv(T))
