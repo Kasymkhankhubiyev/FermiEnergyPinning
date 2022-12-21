@@ -108,7 +108,7 @@ def calc_phi_without_nas(parameters):
 def calculate(parameters) -> dict:
     semiconductor = models.Semiconductor(parameters['m_e'] * constants.me, parameters['m_h'] * constants.me,
                                          parameters['E_gap'] * constants.eV, eps=parameters['epsilon'], chi=None)
-    pin_fermi = models.DopedSemiconductor(mat=semiconductor, Na=0, Nd=0, Ea=0, Ed=0)
+    pin_fermi = models.DopedSemiconductor(mat=semiconductor, Na=0, Nd=parameters['N_d0'], Ea=0, Ed=parameters['E_d']*constants.eV)
     T = parameters['T']
     try:
         # _check_parameters(parameters, semiconductor.Nc(T), semiconductor.Nv(T))
@@ -121,15 +121,15 @@ def calculate(parameters) -> dict:
         parameters['E_out'] = parameters['E_out'] * 3.3e-5  # 1 V/m = 3.3e-5 СГСЭ-ед заряда
 
         try:
-            parameters['E_f'] = find_fermi_level(me=parameters['m_e'], mh=parameters['m_h'],
-                                                 t=parameters['T'],
-                                                 Jd=(parameters['E_gap'] - parameters['E_d']) / constants.eV,
-                                                 Efpl=parameters['E_gap'] / constants.eV / 2,
-                                                 Efneg=parameters['E_gap'] / constants.eV,
-                                                 Ec=parameters['E_gap'] / constants.eV, Ev=0, Nd=parameters['N_d0'])
-            print(parameters['E_f'])
-            parameters['E_f'] *= constants.eV
-            # parameters['E_f'] = semiconductor.fermi_level(T)
+            # parameters['E_f'] = find_fermi_level(me=parameters['m_e'], mh=parameters['m_h'],
+            #                                      t=parameters['T'],
+            #                                      Jd=(parameters['E_gap'] - parameters['E_d']) / constants.eV,
+            #                                      Efpl=parameters['E_gap'] / constants.eV / 2,
+            #                                      Efneg=parameters['E_gap'] / constants.eV,
+            #                                      Ec=parameters['E_gap'] / constants.eV, Ev=0, Nd=parameters['N_d0'])
+            # print(parameters['E_f'])
+            # parameters['E_f'] *= constants.eV
+            parameters['E_f'] = pin_fermi.fermi_level(T)
             results['E_f'] = parameters['E_f']
             if parameters['N_as'] != 0:
                 results['phi'] = solve_equation_find_phi(parameters)  # eV
