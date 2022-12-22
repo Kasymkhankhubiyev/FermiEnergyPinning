@@ -84,16 +84,28 @@ def data_for_graph(phi, W, parameters):  # phi [eV], W [cm]
         if W != 0:
             E_as_s.append(E_as+c)
 
-            if x_s[i] > W:  # flat zone
-                E_v_s.append(0)
-                E_c_s.append(E_gap)
-                E_d_s.append(E_d)
+            if np.sign(parameters['E_out']) < 0 and parameters['N_as'] == 0:
+                if x_s[i] > W:  # flat zone
+                    E_v_s.append(0)
+                    E_c_s.append(E_gap)
+                    E_d_s.append(E_d)
 
-            else:  # zone with parabola: flat + parabola bend
-                bend = a * x_s[i] ** 2 + b * x_s[i] + c
-                E_v_s.append(bend)
-                E_c_s.append(E_gap + bend)
-                E_d_s.append(E_d + bend)
+                else:  # zone with parabola: flat + parabola bend
+                    bend = np.sign(parameters['E_out']) * (a * x_s[i] ** 2 + b * x_s[i] + c)
+                    E_v_s.append(bend)
+                    E_c_s.append(E_gap + bend)
+                    E_d_s.append(E_d + bend)
+            else:
+                if x_s[i] > W:  # flat zone
+                    E_v_s.append(0)
+                    E_c_s.append(E_gap)
+                    E_d_s.append(E_d)
+
+                else:  # zone with parabola: flat + parabola bend
+                    bend = a * x_s[i] ** 2 + b * x_s[i] + c
+                    E_v_s.append(bend)
+                    E_c_s.append(E_gap + bend)
+                    E_d_s.append(E_d + bend)
         elif W == 0:
             E_as_s.append(E_as)
 
@@ -105,7 +117,7 @@ def data_for_graph(phi, W, parameters):  # phi [eV], W [cm]
 
 
 def calc_phi_without_nas(parameters):
-    
+    print(np.sign(parameters['E_out']))
     return (parameters['E_out'] / 3.3e-5 / 1e2 / (4 * np.pi * 1.6e-19))**2 * (2 * np.pi * 1.6e-19**2 * 8.8e-14) / parameters['epsilon'] / parameters['N_d0'] * 1e19
 
 
