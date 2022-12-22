@@ -25,6 +25,7 @@ class MainWindow:
         self.nas_sbox, self.nas_pwr_sbox = None, None
         self.eg_sbox, self.epsilon_sbox, self.eas_sbox = None, None, None
         self.ed_sbox, self.eout_sbox, self.temp_sbox = None, None, None
+        self.field_sign = tk.IntVar()
 
         self.calc_button = None
 
@@ -196,11 +197,14 @@ class MainWindow:
         # Величина внешнего поля
         # tk.Label(self.window, text='Внешнее поле', font=font_sbox).grid(row=10, column=1, columnspan=4, sticky=tk.W)
         tk.Label(self.window, text='Eout = ', font=font_label).grid(row=7, column=1, sticky=tk.E)
+        tk.Checkbutton(self.window, text='-1 * ', variable=self.field_sign, onvalue=1, offvalue=0, \
+            command=self._button_handler, font=font_label).grid(row=7, column=2, sticky='e')
         self.eout_sbox = tk.Spinbox(self.window, font=font_sbox, width=5, from_=0, to=1e10,
                                     command=self._sbox_handler, increment=0.01)
-        self.eout_sbox.grid(row=7, column=2, sticky=tk.W + tk.E)
-        tk.Label(self.window, text='* 10^6', font=font_label).grid(row=7, column=3, columnspan=4, sticky=tk.W)
-        tk.Label(self.window, text='V/m', font=font_label).grid(row=7, column=4, columnspan=4, sticky=tk.W)
+        self.eout_sbox.grid(row=7, column=3, sticky=tk.W + tk.E)
+        tk.Label(self.window, text='* 10^9 V/m', font=font_label).grid(row=7, column=4, sticky=tk.W)
+
+        # tk.Label(self.window, text='', font=font_label).grid(row=7, column=4, columnspan=4, sticky=tk.W)
         self.eout_sbox.bind("<KeyRelease>", self._sbox_handler)
 
     def draw_window(self) -> None:
@@ -230,8 +234,6 @@ class MainWindow:
         self._set_default()
 
     def _calculate(self) -> dict:
-        # Сюда надо будет запихать кусок, который считает и пакует всё в dict
-
         args = {
             "E_gap": float(self.eg_sbox.get()),  # Band gap [eV]
             "epsilon": float(self.epsilon_sbox.get()),  # Dielectric permittivity
@@ -242,8 +244,9 @@ class MainWindow:
             "E_as": float(self.eas_sbox.get()),  # Surface acceptors level [eV]
             "N_as": float(self.nas_sbox.get()) * 10**int(self.nas_pwr_sbox.get()),  # Concentration of surface acceptors [cm^(-3)]
             "T": float(self.temp_sbox.get()),  # Temperature [K]
-            "E_out": float(float(self.eout_sbox.get()) * 1e6)  # External electric field
+            "E_out": float(float(self.eout_sbox.get()) * 1e9 * (-1)**self.field_sign.get())  # External electric field
         }
+        print(args['E_out'])
 
         args['E_d'] = args['E_gap'] - args['E_d']
         data = calculations.calculate(args)
@@ -262,6 +265,7 @@ class MainWindow:
         return data
 
     def _button_handler(self) -> None:
+        # print("Handled")
         try:
             data = self._calculate()
             self.fermi_canvas.draw(data)
