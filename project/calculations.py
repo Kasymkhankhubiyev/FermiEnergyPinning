@@ -100,6 +100,7 @@ def data_for_graph(phi, W, parameters):  # phi [eV], W [cm]
 
     return x_s, E_f_s, E_v_s, E_c_s, E_d_s, E_as_s
 
+
 def calc_phi_without_nas(parameters):
     
     return (parameters['E_out'] / 3.3e-5 / 1e2 / (4 * np.pi * 1.6e-19))**2 * (2 * np.pi * 1.6e-19**2 * 8.8e-14) / parameters['epsilon'] / parameters['N_d0'] * 1e19

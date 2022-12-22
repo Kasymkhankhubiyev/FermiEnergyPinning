@@ -199,7 +199,7 @@ class MainWindow:
         self.eout_sbox = tk.Spinbox(self.window, font=font_sbox, width=5, from_=0, to=1e10,
                                     command=self._sbox_handler, increment=0.01)
         self.eout_sbox.grid(row=7, column=2, sticky=tk.W + tk.E)
-        tk.Label(self.window, text='* 10^4', font=font_label).grid(row=7, column=3, columnspan=4, sticky=tk.W)
+        tk.Label(self.window, text='* 10^6', font=font_label).grid(row=7, column=3, columnspan=4, sticky=tk.W)
         tk.Label(self.window, text='V/m', font=font_label).grid(row=7, column=4, columnspan=4, sticky=tk.W)
         self.eout_sbox.bind("<KeyRelease>", self._sbox_handler)
 
@@ -242,7 +242,7 @@ class MainWindow:
             "E_as": float(self.eas_sbox.get()),  # Surface acceptors level [eV]
             "N_as": float(self.nas_sbox.get()) * 10**int(self.nas_pwr_sbox.get()),  # Concentration of surface acceptors [cm^(-3)]
             "T": float(self.temp_sbox.get()),  # Temperature [K]
-            "E_out": float(float(self.eout_sbox.get()) * 1e4)  # External electric field
+            "E_out": float(float(self.eout_sbox.get()) * 1e6)  # External electric field
         }
 
         args['E_d'] = args['E_gap'] - args['E_d']
