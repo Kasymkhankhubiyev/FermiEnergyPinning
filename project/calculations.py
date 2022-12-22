@@ -80,9 +80,10 @@ def data_for_graph(phi, W, parameters):  # phi [eV], W [cm]
     for i in range(N + 1):
         x_s.append(i * h)
         E_f_s.append(E_f)
-        E_as_s.append(E_as+c)
 
         if W != 0:
+            E_as_s.append(E_as+c)
+
             if x_s[i] > W:  # flat zone
                 E_v_s.append(0)
                 E_c_s.append(E_gap)
@@ -94,6 +95,8 @@ def data_for_graph(phi, W, parameters):  # phi [eV], W [cm]
                 E_c_s.append(E_gap + bend)
                 E_d_s.append(E_d + bend)
         elif W == 0:
+            E_as_s.append(E_as)
+
             E_v_s.append(0)
             E_c_s.append(E_gap)
             E_d_s.append(E_d)
