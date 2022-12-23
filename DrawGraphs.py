@@ -30,7 +30,10 @@ class FermiCanvas:
         self.ax.plot(data['x_s'], data['E_d_s'], c='blue', label='Donor Energy')
         self.ax.plot(data['x_s'], data['E_v_s'], c='purple', label='Valence Band')
 
-        self.ax.axhline(data['phi'], c='k', linestyle='dashed')
+        if(data['E_v_s'][0]<0):
+            self.ax.axhline(-1*data['phi'], c='k', linestyle='dashed')
+        else:
+            self.ax.axhline(data['phi'], c='k', linestyle='dashed')
         self.ax.axvline(data['W'], c='k', linestyle='dashed')
 
         self.ax.legend(fontsize=10, loc='right')
